@@ -1,18 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class IConsoleCommand : MonoBehaviour
+public interface IConsoleCommand
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    string Name { get; }
+    void Execute(ICommandArguments arguments);
+    string GetHelp();
 }

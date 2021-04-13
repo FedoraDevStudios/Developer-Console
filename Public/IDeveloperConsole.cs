@@ -1,18 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class IDeveloperConsole : MonoBehaviour
+public interface IDeveloperConsole
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    bool RegisterCommand(IConsoleCommand command);
+    void ProcessCommand(string input);
+    void PushMessage(string message);
+    void PushMessages(string[] messages);
 }
