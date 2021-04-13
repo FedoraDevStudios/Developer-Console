@@ -1,0 +1,12 @@
+{
+	"name": "com.fedoradev.developerconsole",
+	"displayName": "Developer Console",
+	"version": "0.0.1",
+	"unity": "2020.3",
+	"unityRelease": "2f1",
+	"description": "A Console Window built to be extended and useful to any external system.",
+	"author": {
+		"name": "Fedora Dev",
+		"email": "fedora.game.dev@gmail.com"
+	}
+}
