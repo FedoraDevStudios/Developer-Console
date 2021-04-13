@@ -1,3 +1,16 @@
 {
-	"name": "_FedoraDev.DeveloperConsole.Implementations"
+    "name": "_FedoraDev.DeveloperConsole.Implementations",
+    "rootNamespace": "",
+    "references": [
+        "GUID:8c25cc56960a7a041a7d5b04f8b9a135"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }
