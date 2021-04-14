@@ -9,7 +9,7 @@ public class DeveloperConsoleBehaviour : SerializedMonoBehaviour, IDeveloperCons
 	[SerializeField] TMP_Text _logField;
 	[SerializeField] Scrollbar _scrollbar;
 
-	private void Awake()
+	private void Start()
 	{
 		UpdateConsoleWindow();
 	}
@@ -22,7 +22,11 @@ public class DeveloperConsoleBehaviour : SerializedMonoBehaviour, IDeveloperCons
 
 	public string MessageLog => _console.MessageLog;
 
-	public bool RegisterCommand(IConsoleCommand command) => _console.RegisterCommand(command);
+	public bool RegisterCommand(IConsoleCommand command)
+	{
+		command.DeveloperConsole = this;
+		return _console.RegisterCommand(command);
+	}
 
 	public void ProcessCommand(string input)
 	{

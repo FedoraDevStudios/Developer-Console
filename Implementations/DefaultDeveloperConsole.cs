@@ -1,9 +1,19 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
+
+public enum OverrideRule
+{
+	Ignore,
+	Replace,
+	Rename
+}
 
 public class DefaultDeveloperConsole : IDeveloperConsole
 {
-	List<IConsoleCommand> _commands = new List<IConsoleCommand>();
+	[SerializeField] OverrideRule _overrideRule = OverrideRule.Ignore;
+
+	Dictionary<string, IConsoleCommand> _commands = new Dictionary<string, IConsoleCommand>();
 
 	public string MessageLog => _messageLog;
 
@@ -12,7 +22,41 @@ public class DefaultDeveloperConsole : IDeveloperConsole
 
 	public bool RegisterCommand(IConsoleCommand command)
 	{
-		_commands.Add(command);
+		if (_commands == null)
+			_commands = new Dictionary<string, IConsoleCommand>();
+
+		foreach (KeyValuePair<string, IConsoleCommand> consoleCommand in _commands)
+		{
+			if (command.Name == consoleCommand.Key)
+			{
+				PushMessage($"Command with name '{command.Name}' is already registered.");
+
+				switch (_overrideRule)
+				{
+					case OverrideRule.Ignore:
+						PushMessage($"Command will be ignored.");
+						return true;
+
+					case OverrideRule.Replace:
+						PushMessage($"Command will be overridden.");
+						_commands[command.Name] = command;
+						return true;
+
+					case OverrideRule.Rename:
+						PushMessage($"Command will be renamed.");
+						int increment = 1;
+						string newCommandName = $"{command.Name}_{increment}";
+						while (_commands.ContainsKey(newCommandName))
+							newCommandName = $"{command.Name}_{++increment}";
+
+						_commands.Add(newCommandName, command);
+						PushMessage($"Command will be named '{newCommandName}'");
+						return true;
+				}
+			}
+		}
+
+		_commands.Add(command.Name, command);
 		return true;
 	}
 
@@ -45,15 +89,47 @@ public class DefaultDeveloperConsole : IDeveloperConsole
 			}
 		}
 
-		DefaultCommandArguments commandArguments = new DefaultCommandArguments(inputParts[0], arguments.ToArray(), flags);
+		string commandName = inputParts[0];
+		bool printHelp = false;
 
-		for (int i = 0; i < _commands.Count; i++)
+		if (commandName == "help")
 		{
-			if (commandArguments.CommandName == _commands[i].Name)
+			if (arguments.Count == 0)
+			{
+				PushMessage("To use a command, use the following syntax:");
+				PushMessage("{command name} [arguments|flags]");
+				PushMessage("Available Commands:");
+
+				foreach (KeyValuePair<string, IConsoleCommand> consoleCommand in _commands)
+					PushMessage($"  {consoleCommand.Key}");
+
+				PushMessage(string.Empty);
+				_indent -= 4;
+				return;
+			}
+
+			printHelp = true;
+			commandName = arguments[0];
+			arguments.RemoveAt(0);
+		}
+
+		DefaultCommandArguments commandArguments = new DefaultCommandArguments(input, commandName, arguments.ToArray(), flags);
+
+
+		foreach (KeyValuePair<string, IConsoleCommand> consoleCommand in _commands)
+		{
+			if (commandArguments.CommandName == consoleCommand.Key)
 			{
 				try
 				{
-					_commands[i].Execute(commandArguments);
+					if (printHelp)
+					{
+						string helpText = consoleCommand.Value.GetHelp(commandArguments);
+						PushMessage(helpText);
+						break;
+					}
+
+					consoleCommand.Value.Execute(commandArguments);
 					break;
 				}
 				catch (Exception e)
