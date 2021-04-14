@@ -261,6 +261,7 @@ GameObject:
   - component: {fileID: 283803695}
   - component: {fileID: 283803694}
   - component: {fileID: 283803696}
+  - component: {fileID: 283803697}
   m_Layer: 5
   m_Name: Developer Console
   m_TagString: Untagged
@@ -351,11 +352,53 @@ MonoBehaviour:
     - Name: _console
       Entry: 7
       Data: 0|DefaultDeveloperConsole, _FedoraDev.DeveloperConsole.Implementations
+    - Name: _overrideRule
+      Entry: 3
+      Data: 1
     - Name: 
       Entry: 8
       Data: 
   _logField: {fileID: 948784112}
   _scrollbar: {fileID: 24018397}
+--- !u!114 &283803697
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 283803692}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fcbcb40737c95224baec0eb538847191, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: _commands
+      Entry: 7
+      Data: 0|IConsoleCommand[], NewAssembly
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 1|EchoCommand, _FedoraDev.DeveloperConsole.Implementations
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
 --- !u!1 &344860104
 GameObject:
   m_ObjectHideFlags: 0

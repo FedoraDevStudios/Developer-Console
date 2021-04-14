@@ -2,13 +2,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum OverrideRule
-{
-	Ignore,
-	Replace,
-	Rename
-}
-
 public class DefaultDeveloperConsole : IDeveloperConsole
 {
 	[SerializeField] OverrideRule _overrideRule = OverrideRule.Ignore;
@@ -114,7 +107,6 @@ public class DefaultDeveloperConsole : IDeveloperConsole
 		}
 
 		DefaultCommandArguments commandArguments = new DefaultCommandArguments(input, commandName, arguments.ToArray(), flags);
-
 
 		foreach (KeyValuePair<string, IConsoleCommand> consoleCommand in _commands)
 		{
