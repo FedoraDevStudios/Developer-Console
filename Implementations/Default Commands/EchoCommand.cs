@@ -11,8 +11,8 @@ public class EchoCommand : IConsoleCommand
 		DeveloperConsole.PushMessage(arguments.TextEntered.Substring(arguments.CommandName.Length));
 	}
 
-	public string GetHelp(ICommandArguments arguments)
+	public string[] GetHelp(ICommandArguments arguments)
 	{
-		return "Prints the text that follows the command to the console.";
+		return new string[] { "Prints the text that follows the command to the console." };
 	}
 }

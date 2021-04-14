@@ -7,5 +7,5 @@ public class ClearCommand : IConsoleCommand
 
 	public IDeveloperConsole DeveloperConsole { get => _developerConsole; set => _developerConsole = value; }
 	public void Execute(ICommandArguments arguments) => _developerConsole.ClearLog();
-	public string GetHelp(ICommandArguments arguments) => "Clears the console's log.";
+	public string[] GetHelp(ICommandArguments arguments) => new string[] { "Clears the console's log." };
 }

@@ -105,7 +105,7 @@ public class DefaultDeveloperConsole : IDeveloperConsole
 		{
 			foreach (KeyValuePair<string, IConsoleCommand> consoleCommand in _commands)
 				if (commandArguments.GetArgument(0) == consoleCommand.Key)
-					PushMessage(consoleCommand.Value.GetHelp(commandArguments));
+					PushMessages(consoleCommand.Value.GetHelp(commandArguments));
 		}
 	}
 
