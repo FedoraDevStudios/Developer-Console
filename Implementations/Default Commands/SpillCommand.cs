@@ -23,7 +23,7 @@ public class SpillCommand : IConsoleCommand
 		_developerConsole.PushMessage($"Arguments: {arguments.ArgumentQuantity - 1}");
 
 		for (int i = 1; i < arguments.ArgumentQuantity; i++)
-			_developerConsole.PushMessage($"        {i}: {arguments.GetArgument(i)}");
+			_developerConsole.PushMessage($"        {i - 1}: {arguments.GetArgument(i)}");
 
 		List<char> assignedFlags = new List<char>();
 
