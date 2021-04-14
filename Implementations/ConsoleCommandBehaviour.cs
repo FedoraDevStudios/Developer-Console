@@ -1,18 +1,17 @@
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-[RequireComponent(typeof(DeveloperConsoleBehaviour))]
 public class ConsoleCommandBehaviour : SerializedMonoBehaviour
 {
+	[SerializeField, HideLabel, BoxGroup("Developer Console")] IDeveloperConsole _developerConsole;
 	[SerializeField, HideLabel, BoxGroup("Commands")] IConsoleCommand[] _commands = new IConsoleCommand[0];
-
-	DeveloperConsoleBehaviour _developerConsoleBehaviour;
 
 	private void Awake()
 	{
-		_developerConsoleBehaviour = FindObjectOfType<DeveloperConsoleBehaviour>();
+		if (_developerConsole == null)
+			return;
 
 		foreach (IConsoleCommand command in _commands)
-			_developerConsoleBehaviour.RegisterCommand(command);
+			_developerConsole.RegisterCommand(command);
 	}
 }

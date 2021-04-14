@@ -987,12 +987,16 @@ MonoBehaviour:
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
-    ReferencedUnityObjects: []
+    ReferencedUnityObjects:
+    - {fileID: 6277410858663919752}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
+    - Name: _developerConsole
+      Entry: 10
+      Data: 0
     - Name: _commands
       Entry: 7
       Data: 0|IConsoleCommand[], _FedoraDev.DeveloperConsole

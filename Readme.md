@@ -107,7 +107,7 @@ The Command Arguments object contains a few useful nuggets of information for yo
 
 ##### TextEntered
 ```c#
-string TextEntered { Get; }
+string TextEntered { get; }
 ```
 This is the raw text that the user entered. In most cases, you won't need this information.
 
@@ -158,3 +158,10 @@ Flags: 2
     s: 5
     v: true
 ```
+
+## Further Reading
+### IDeveloperConsole
+Every piece of the system is built for expansion. If the current console is not providing what you need, but you already have a ton of commands built out, you can simply create a new implementation of `IDeveloperConsole` and swap it in place without needing to touch the rest of your codebase. Currently, there are 2 implementations of `IDeveloperConsole` included; `DefaultDeveloperConsole` and `DeveloperConsoleBehaviour`. The behaviour handles all things Unity and simply stores a reference to an IDeveloperConsole. By default, it's assigned `DefaultDeveloperConsole`. This would be the easiest place to plug in your own implementation; simply select your `IDeveloperConsole` from the drop down on the component and everything should work seemlessly.
+
+### ConsoleCommandBehaviour
+This component is incredibly simple, it just holds a list of `IConsoleCommand` and registers them to the assigned `IDeveloperConsole` on `Awake`.
