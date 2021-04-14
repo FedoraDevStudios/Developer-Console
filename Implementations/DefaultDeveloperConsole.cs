@@ -153,6 +153,8 @@ public class DefaultDeveloperConsole : IDeveloperConsole
 			ManageDuplicateCommandName(command);
 		else
 			_commands.Add(command.Name, command);
+
+		command.DeveloperConsole = this;
 	}
 
 	public void ProcessCommand(string input)

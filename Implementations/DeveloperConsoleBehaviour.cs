@@ -24,8 +24,8 @@ public class DeveloperConsoleBehaviour : SerializedMonoBehaviour, IDeveloperCons
 
 	public void RegisterCommand(IConsoleCommand command)
 	{
-		command.DeveloperConsole = this;
 		_console.RegisterCommand(command);
+		command.DeveloperConsole = this;
 	}
 
 	public void ProcessCommand(string input)
