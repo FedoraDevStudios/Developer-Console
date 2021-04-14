@@ -5,60 +5,52 @@ using UnityEngine;
 public class DefaultDeveloperConsole : IDeveloperConsole
 {
 	[SerializeField] OverrideRule _overrideRule = OverrideRule.Ignore;
+	[SerializeField] SpacingStyle _spacingStyle = SpacingStyle.Spacious;
 
 	Dictionary<string, IConsoleCommand> _commands = new Dictionary<string, IConsoleCommand>();
 
-	public string MessageLog => _messageLog;
+	[SerializeField] int _indentSize = 8;
 
 	string _messageLog;
 	int _indent = 0;
 
-	public bool RegisterCommand(IConsoleCommand command)
+	void ManageDuplicateCommandName(IConsoleCommand command)
 	{
-		if (_commands == null)
-			_commands = new Dictionary<string, IConsoleCommand>();
+		PushMessage($"Command with name '{command.Name}' is already registered.");
 
-		foreach (KeyValuePair<string, IConsoleCommand> consoleCommand in _commands)
+		switch (_overrideRule)
 		{
-			if (command.Name == consoleCommand.Key)
-			{
-				PushMessage($"Command with name '{command.Name}' is already registered.");
+			case OverrideRule.Ignore:
+				PushMessage($"Command will be ignored.");
+				break;
 
-				switch (_overrideRule)
-				{
-					case OverrideRule.Ignore:
-						PushMessage($"Command will be ignored.");
-						return true;
+			case OverrideRule.Replace:
+				PushMessage($"Command will be overridden.");
+				_commands[command.Name] = command;
+				break;
 
-					case OverrideRule.Replace:
-						PushMessage($"Command will be overridden.");
-						_commands[command.Name] = command;
-						return true;
+			case OverrideRule.Rename:
+				PushMessage($"Command will be renamed.");
 
-					case OverrideRule.Rename:
-						PushMessage($"Command will be renamed.");
-						int increment = 1;
-						string newCommandName = $"{command.Name}_{increment}";
-						while (_commands.ContainsKey(newCommandName))
-							newCommandName = $"{command.Name}_{++increment}";
+				int increment = 1;
+				string newCommandName = $"{command.Name}_{increment}";
 
-						_commands.Add(newCommandName, command);
-						PushMessage($"Command will be named '{newCommandName}'");
-						return true;
-				}
-			}
+				while (_commands.ContainsKey(newCommandName))
+					newCommandName = $"{command.Name}_{++increment}";
+
+				_commands.Add(newCommandName, command);
+				PushMessage($"Command will be named '{newCommandName}'");
+				break;
 		}
 
-		_commands.Add(command.Name, command);
-		return true;
+		if (_spacingStyle == SpacingStyle.Spacious)
+			PushMessage(string.Empty);
 	}
 
-	public void ProcessCommand(string input)
+	ICommandArguments GetArgumentsAndFlags(string input)
 	{
-		PushMessage($"> {input}");
-		_indent += 4;
-		//inventory add storable inventory -v -h=yowhat
 		string[] inputParts = input.Split(' ');
+		string commandName = inputParts[0];
 		List<string> arguments = new List<string>();
 		Dictionary<string, string> flags = new Dictionary<string, string>();
 
@@ -82,45 +74,49 @@ public class DefaultDeveloperConsole : IDeveloperConsole
 			}
 		}
 
-		string commandName = inputParts[0];
-		bool printHelp = false;
+		return new DefaultCommandArguments(input, commandName, arguments.ToArray(), flags);
+	}
 
-		if (commandName == "help")
+	void HandleHelpRequest(ICommandArguments commandArguments)
+	{
+		if (commandArguments.ArgumentQuantity == 0)
 		{
-			if (arguments.Count == 0)
-			{
-				PushMessage("To use a command, use the following syntax:");
-				PushMessage("{command name} [arguments|flags]");
-				PushMessage("Available Commands:");
+			PushMessage("To use a command, use the following syntax:");
 
-				foreach (KeyValuePair<string, IConsoleCommand> consoleCommand in _commands)
-					PushMessage($"  {consoleCommand.Key}");
-
+			Indent();
+			PushMessage("{command name} [arguments|flags]");
+			if (_spacingStyle == SpacingStyle.Spacious)
 				PushMessage(string.Empty);
-				_indent -= 4;
-				return;
-			}
+			Deindent();
 
-			printHelp = true;
-			commandName = arguments[0];
-			arguments.RemoveAt(0);
+			PushMessage("Available Commands:");
+
+			Indent();
+			foreach (KeyValuePair<string, IConsoleCommand> consoleCommand in _commands)
+				PushMessage($"{consoleCommand.Key}: {consoleCommand.Value.Usage}");
+			if (_spacingStyle == SpacingStyle.Spacious)
+				PushMessage(string.Empty);
+			Deindent();
+
+			Deindent();
+			return;
 		}
+		else
+		{
+			foreach (KeyValuePair<string, IConsoleCommand> consoleCommand in _commands)
+				if (commandArguments.GetArgument(0) == consoleCommand.Key)
+					PushMessage(consoleCommand.Value.GetHelp(commandArguments));
+		}
+	}
 
-		DefaultCommandArguments commandArguments = new DefaultCommandArguments(input, commandName, arguments.ToArray(), flags);
-
+	void HandleCommand(ICommandArguments commandArguments)
+	{
 		foreach (KeyValuePair<string, IConsoleCommand> consoleCommand in _commands)
 		{
 			if (commandArguments.CommandName == consoleCommand.Key)
 			{
 				try
 				{
-					if (printHelp)
-					{
-						string helpText = consoleCommand.Value.GetHelp(commandArguments);
-						PushMessage(helpText);
-						break;
-					}
-
 					consoleCommand.Value.Execute(commandArguments);
 					break;
 				}
@@ -140,14 +136,45 @@ public class DefaultDeveloperConsole : IDeveloperConsole
 				}
 			}
 		}
+	}
 
-		_indent -= 4;
+	void Indent() => _indent += _indentSize;
+	void Deindent() => _indent -= _indentSize;
+
+	#region IDeveloperConsole Implementation
+	public string MessageLog => _messageLog;
+
+	public void RegisterCommand(IConsoleCommand command)
+	{
+		if (_commands == null)
+			_commands = new Dictionary<string, IConsoleCommand>();
+
+		if (_commands.ContainsKey(command.Name))
+			ManageDuplicateCommandName(command);
+		else
+			_commands.Add(command.Name, command);
+	}
+
+	public void ProcessCommand(string input)
+	{
+		PushMessage($"> {input}");
+		Indent();
+
+		ICommandArguments commandArguments = GetArgumentsAndFlags(input);
+
+		if (commandArguments.CommandName == "help")
+			HandleHelpRequest(commandArguments);
+		else
+			HandleCommand(commandArguments);
+		
+		if (_spacingStyle == SpacingStyle.Spacious)
+			PushMessage(string.Empty);
+		_indent = 0;
 	}
 
 	public void PushMessage(string message)
 	{
-		string indentation = new string(' ', _indent);
-		_messageLog += $"\n{indentation}{message}";
+		_messageLog += $"\n{new string(' ', _indent)}{message}";
 	}
 
 	public void PushMessages(string[] messages)
@@ -160,4 +187,5 @@ public class DefaultDeveloperConsole : IDeveloperConsole
 	{
 		_messageLog = string.Empty;
 	}
+	#endregion
 }

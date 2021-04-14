@@ -1,6 +1,7 @@
 public class EchoCommand : IConsoleCommand
 {
 	public string Name => "echo";
+	public string Usage => "echo {text to display}";
 	public IDeveloperConsole DeveloperConsole { get => _developerConsole; set => _developerConsole = value; }
 
 	IDeveloperConsole _developerConsole;

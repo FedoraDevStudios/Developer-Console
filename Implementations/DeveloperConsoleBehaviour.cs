@@ -22,10 +22,10 @@ public class DeveloperConsoleBehaviour : SerializedMonoBehaviour, IDeveloperCons
 
 	public string MessageLog => _console.MessageLog;
 
-	public bool RegisterCommand(IConsoleCommand command)
+	public void RegisterCommand(IConsoleCommand command)
 	{
 		command.DeveloperConsole = this;
-		return _console.RegisterCommand(command);
+		_console.RegisterCommand(command);
 	}
 
 	public void ProcessCommand(string input)
