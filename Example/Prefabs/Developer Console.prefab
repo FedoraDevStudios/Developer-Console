@@ -956,7 +956,20 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes:
     - Name: _console
-      Entry: 6
+      Entry: 7
+      Data: 0|FedoraDev.DeveloperConsole.Implementations.DefaultDeveloperConsole,
+        _FedoraDev.DeveloperConsole.Implementations
+    - Name: _overrideRule
+      Entry: 3
+      Data: 1
+    - Name: _spacingStyle
+      Entry: 3
+      Data: 1
+    - Name: _indentSize
+      Entry: 3
+      Data: 8
+    - Name: 
+      Entry: 8
       Data: 
   _logField: {fileID: 6277410858258664264}
   _scrollbar: {fileID: 6277410858370022757}
