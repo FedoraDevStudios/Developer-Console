@@ -956,19 +956,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes:
     - Name: _console
-      Entry: 7
-      Data: 0|DefaultDeveloperConsole, _FedoraDev.DeveloperConsole.Implementations
-    - Name: _overrideRule
-      Entry: 3
-      Data: 1
-    - Name: _spacingStyle
-      Entry: 3
-      Data: 1
-    - Name: _indentSize
-      Entry: 3
-      Data: 8
-    - Name: 
-      Entry: 8
+      Entry: 6
       Data: 
   _logField: {fileID: 6277410858258664264}
   _scrollbar: {fileID: 6277410858370022757}
@@ -999,25 +987,25 @@ MonoBehaviour:
       Data: 0
     - Name: _commands
       Entry: 7
-      Data: 0|IConsoleCommand[], _FedoraDev.DeveloperConsole
+      Data: 0|FedoraDev.DeveloperConsole.IConsoleCommand[], _FedoraDev.DeveloperConsole
     - Name: 
       Entry: 12
       Data: 3
     - Name: 
       Entry: 7
-      Data: 1|EchoCommand, _FedoraDev.DeveloperConsole.Implementations
+      Data: 1|FedoraDev.DeveloperConsole.Implementations.Commands.ClearCommand, _FedoraDev.DeveloperConsole.Implementations
     - Name: 
       Entry: 8
       Data: 
     - Name: 
       Entry: 7
-      Data: 2|ClearCommand, _FedoraDev.DeveloperConsole.Implementations
+      Data: 2|FedoraDev.DeveloperConsole.Implementations.Commands.EchoCommand, _FedoraDev.DeveloperConsole.Implementations
     - Name: 
       Entry: 8
       Data: 
     - Name: 
       Entry: 7
-      Data: 3|SpillCommand, _FedoraDev.DeveloperConsole.Implementations
+      Data: 3|FedoraDev.DeveloperConsole.Implementations.Commands.SpillCommand, _FedoraDev.DeveloperConsole.Implementations
     - Name: 
       Entry: 8
       Data: 
