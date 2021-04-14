@@ -52,7 +52,7 @@ public class DefaultDeveloperConsole : IDeveloperConsole
 		string[] inputParts = input.Split(' ');
 		string commandName = inputParts[0];
 		List<string> arguments = new List<string>();
-		Dictionary<string, string> flags = new Dictionary<string, string>();
+		Dictionary<char, string> flags = new Dictionary<char, string>();
 
 		for (int i = 1; i < inputParts.Length; i++)
 		{
@@ -63,9 +63,9 @@ public class DefaultDeveloperConsole : IDeveloperConsole
 				//This is a flag
 				string[] flagParts = part.Split('=');
 				if (flagParts.Length > 1)
-					flags.Add(flagParts[0], flagParts[1]);
+					flags.Add(flagParts[0].ToCharArray()[1], flagParts[1]);
 				else
-					flags.Add(flagParts[0], "true");
+					flags.Add(flagParts[0].ToCharArray()[1], "true");
 			}
 			else
 			{

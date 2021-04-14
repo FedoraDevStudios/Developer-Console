@@ -5,5 +5,5 @@ public interface ICommandArguments
     int ArgumentQuantity { get; }
 
     string GetArgument(int index);
-    string GetFlag(string flagName);
+    string GetFlag(char flagName);
 }

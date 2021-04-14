@@ -995,10 +995,10 @@ MonoBehaviour:
     SerializationNodes:
     - Name: _commands
       Entry: 7
-      Data: 0|IConsoleCommand[], NewAssembly
+      Data: 0|IConsoleCommand[], _FedoraDev.DeveloperConsole
     - Name: 
       Entry: 12
-      Data: 2
+      Data: 3
     - Name: 
       Entry: 7
       Data: 1|EchoCommand, _FedoraDev.DeveloperConsole.Implementations
@@ -1008,6 +1008,12 @@ MonoBehaviour:
     - Name: 
       Entry: 7
       Data: 2|ClearCommand, _FedoraDev.DeveloperConsole.Implementations
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 3|SpillCommand, _FedoraDev.DeveloperConsole.Implementations
     - Name: 
       Entry: 8
       Data: 

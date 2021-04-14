@@ -5,9 +5,9 @@ public struct DefaultCommandArguments : ICommandArguments
 	string _textEntered;
 	string _commandName;
 	string[] _arguments;
-	Dictionary<string, string> _flags;
+	Dictionary<char, string> _flags;
 
-	public DefaultCommandArguments(string textEntered, string commandName, string[] arguments, Dictionary<string, string> flags)
+	public DefaultCommandArguments(string textEntered, string commandName, string[] arguments, Dictionary<char, string> flags)
 	{
 		_textEntered = textEntered;
 		_commandName = commandName;
@@ -26,7 +26,7 @@ public struct DefaultCommandArguments : ICommandArguments
 		return null;
 	}
 
-	public string GetFlag(string flagName)
+	public string GetFlag(char flagName)
 	{
 		if (_flags.ContainsKey(flagName))
 			return _flags[flagName];
