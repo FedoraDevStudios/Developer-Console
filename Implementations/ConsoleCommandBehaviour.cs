@@ -1,17 +1,20 @@
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-public class ConsoleCommandBehaviour : SerializedMonoBehaviour
+namespace FedoraDev.DeveloperConsole.Implementations
 {
-	[SerializeField, HideLabel, BoxGroup("Developer Console")] IDeveloperConsole _developerConsole;
-	[SerializeField, HideLabel, BoxGroup("Commands")] IConsoleCommand[] _commands = new IConsoleCommand[0];
-
-	private void Awake()
+	public class ConsoleCommandBehaviour : SerializedMonoBehaviour
 	{
-		if (_developerConsole == null)
-			return;
+		[SerializeField, HideLabel, BoxGroup("Developer Console")] IDeveloperConsole _developerConsole;
+		[SerializeField, HideLabel, BoxGroup("Commands")] IConsoleCommand[] _commands = new IConsoleCommand[0];
 
-		foreach (IConsoleCommand command in _commands)
-			_developerConsole.RegisterCommand(command);
+		private void Awake()
+		{
+			if (_developerConsole == null)
+				return;
+
+			foreach (IConsoleCommand command in _commands)
+				_developerConsole.RegisterCommand(command);
+		}
 	}
 }

@@ -1,6 +1,9 @@
-﻿public enum OverrideRule
+﻿namespace FedoraDev.DeveloperConsole.Implementations
 {
-	Ignore,
-	Replace,
-	Rename
+	public enum OverrideRule
+	{
+		Ignore,
+		Replace,
+		Rename
+	}
 }

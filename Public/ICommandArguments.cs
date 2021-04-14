@@ -1,9 +1,12 @@
-public interface ICommandArguments
+namespace FedoraDev.DeveloperConsole
 {
-    string TextEntered { get; }
-    string CommandName { get; }
-    int ArgumentQuantity { get; }
+    public interface ICommandArguments
+    {
+        string TextEntered { get; }
+        string CommandName { get; }
+        int ArgumentQuantity { get; }
 
-    string GetArgument(int index);
-    string GetFlag(char flagName);
+        string GetArgument(int index);
+        string GetFlag(char flagName);
+    }
 }

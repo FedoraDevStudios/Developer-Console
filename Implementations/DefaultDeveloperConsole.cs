@@ -2,192 +2,195 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DefaultDeveloperConsole : IDeveloperConsole
+namespace FedoraDev.DeveloperConsole.Implementations
 {
-	[SerializeField] OverrideRule _overrideRule = OverrideRule.Ignore;
-	[SerializeField] SpacingStyle _spacingStyle = SpacingStyle.Spacious;
-
-	Dictionary<string, IConsoleCommand> _commands = new Dictionary<string, IConsoleCommand>();
-
-	[SerializeField] int _indentSize = 8;
-
-	string _messageLog;
-	int _indent = 0;
-
-	void ManageDuplicateCommandName(IConsoleCommand command)
+	public class DefaultDeveloperConsole : IDeveloperConsole
 	{
-		PushMessage($"Command with name '{command.Name}' is already registered.");
+		[SerializeField] OverrideRule _overrideRule = OverrideRule.Ignore;
+		[SerializeField] SpacingStyle _spacingStyle = SpacingStyle.Spacious;
 
-		switch (_overrideRule)
+		Dictionary<string, IConsoleCommand> _commands = new Dictionary<string, IConsoleCommand>();
+
+		[SerializeField] int _indentSize = 8;
+
+		string _messageLog;
+		int _indent = 0;
+
+		void ManageDuplicateCommandName(IConsoleCommand command)
 		{
-			case OverrideRule.Ignore:
-				PushMessage($"Command will be ignored.");
-				break;
+			PushMessage($"Command with name '{command.Name}' is already registered.");
 
-			case OverrideRule.Replace:
-				PushMessage($"Command will be overridden.");
-				_commands[command.Name] = command;
-				break;
+			switch (_overrideRule)
+			{
+				case OverrideRule.Ignore:
+					PushMessage($"Command will be ignored.");
+					break;
 
-			case OverrideRule.Rename:
-				PushMessage($"Command will be renamed.");
+				case OverrideRule.Replace:
+					PushMessage($"Command will be overridden.");
+					_commands[command.Name] = command;
+					break;
 
-				int increment = 1;
-				string newCommandName = $"{command.Name}_{increment}";
+				case OverrideRule.Rename:
+					PushMessage($"Command will be renamed.");
 
-				while (_commands.ContainsKey(newCommandName))
-					newCommandName = $"{command.Name}_{++increment}";
+					int increment = 1;
+					string newCommandName = $"{command.Name}_{increment}";
 
-				_commands.Add(newCommandName, command);
-				PushMessage($"Command will be named '{newCommandName}'");
-				break;
+					while (_commands.ContainsKey(newCommandName))
+						newCommandName = $"{command.Name}_{++increment}";
+
+					_commands.Add(newCommandName, command);
+					PushMessage($"Command will be named '{newCommandName}'");
+					break;
+			}
+
+			if (_spacingStyle == SpacingStyle.Spacious)
+				PushMessage(string.Empty);
 		}
 
-		if (_spacingStyle == SpacingStyle.Spacious)
-			PushMessage(string.Empty);
-	}
-
-	ICommandArguments GetArgumentsAndFlags(string input)
-	{
-		string[] inputParts = input.Split(' ');
-		string commandName = inputParts[0];
-		List<string> arguments = new List<string>();
-		Dictionary<char, string> flags = new Dictionary<char, string>();
-
-		for (int i = 1; i < inputParts.Length; i++)
+		ICommandArguments GetArgumentsAndFlags(string input)
 		{
-			string part = inputParts[i];
+			string[] inputParts = input.Split(' ');
+			string commandName = inputParts[0];
+			List<string> arguments = new List<string>();
+			Dictionary<char, string> flags = new Dictionary<char, string>();
 
-			if (part.StartsWith("-"))
+			for (int i = 1; i < inputParts.Length; i++)
 			{
-				//This is a flag
-				string[] flagParts = part.Split('=');
-				if (flagParts.Length > 1)
-					flags.Add(flagParts[0].ToCharArray()[1], flagParts[1]);
+				string part = inputParts[i];
+
+				if (part.StartsWith("-"))
+				{
+					//This is a flag
+					string[] flagParts = part.Split('=');
+					if (flagParts.Length > 1)
+						flags.Add(flagParts[0].ToCharArray()[1], flagParts[1]);
+					else
+						flags.Add(flagParts[0].ToCharArray()[1], "true");
+				}
 				else
-					flags.Add(flagParts[0].ToCharArray()[1], "true");
+				{
+					//This is an argument
+					arguments.Add(part);
+				}
+			}
+
+			return new DefaultCommandArguments(input, commandName, arguments.ToArray(), flags);
+		}
+
+		void HandleHelpRequest(ICommandArguments commandArguments)
+		{
+			if (commandArguments.ArgumentQuantity == 0)
+			{
+				PushMessage("To use a command, use the following syntax:");
+
+				Indent();
+				PushMessage("{command name} [arguments|flags]");
+				if (_spacingStyle == SpacingStyle.Spacious)
+					PushMessage(string.Empty);
+				Deindent();
+
+				PushMessage("Available Commands:");
+
+				Indent();
+				foreach (KeyValuePair<string, IConsoleCommand> consoleCommand in _commands)
+					PushMessage($"{consoleCommand.Key}: {consoleCommand.Value.Usage}");
+				if (_spacingStyle == SpacingStyle.Spacious)
+					PushMessage(string.Empty);
+				Deindent();
+
+				Deindent();
+				return;
 			}
 			else
 			{
-				//This is an argument
-				arguments.Add(part);
+				foreach (KeyValuePair<string, IConsoleCommand> consoleCommand in _commands)
+					if (commandArguments.GetArgument(0) == consoleCommand.Key)
+						PushMessages(consoleCommand.Value.GetHelp(commandArguments));
 			}
 		}
 
-		return new DefaultCommandArguments(input, commandName, arguments.ToArray(), flags);
-	}
-
-	void HandleHelpRequest(ICommandArguments commandArguments)
-	{
-		if (commandArguments.ArgumentQuantity == 0)
-		{
-			PushMessage("To use a command, use the following syntax:");
-
-			Indent();
-			PushMessage("{command name} [arguments|flags]");
-			if (_spacingStyle == SpacingStyle.Spacious)
-				PushMessage(string.Empty);
-			Deindent();
-
-			PushMessage("Available Commands:");
-
-			Indent();
-			foreach (KeyValuePair<string, IConsoleCommand> consoleCommand in _commands)
-				PushMessage($"{consoleCommand.Key}: {consoleCommand.Value.Usage}");
-			if (_spacingStyle == SpacingStyle.Spacious)
-				PushMessage(string.Empty);
-			Deindent();
-
-			Deindent();
-			return;
-		}
-		else
+		void HandleCommand(ICommandArguments commandArguments)
 		{
 			foreach (KeyValuePair<string, IConsoleCommand> consoleCommand in _commands)
-				if (commandArguments.GetArgument(0) == consoleCommand.Key)
-					PushMessages(consoleCommand.Value.GetHelp(commandArguments));
-		}
-	}
-
-	void HandleCommand(ICommandArguments commandArguments)
-	{
-		foreach (KeyValuePair<string, IConsoleCommand> consoleCommand in _commands)
-		{
-			if (commandArguments.CommandName == consoleCommand.Key)
 			{
-				try
+				if (commandArguments.CommandName == consoleCommand.Key)
 				{
-					consoleCommand.Value.Execute(commandArguments);
-					break;
-				}
-				catch (Exception e)
-				{
-					string[] messages = new string[]
+					try
 					{
+						consoleCommand.Value.Execute(commandArguments);
+						break;
+					}
+					catch (Exception e)
+					{
+						string[] messages = new string[]
+						{
 						$"There was an error while running the command.",
 						$"'{commandArguments.CommandName}'",
 						$"Produced:",
 						$"{e.Message}",
 						$"{e.StackTrace}"
-					};
+						};
 
-					PushMessages(messages);
-					break;
+						PushMessages(messages);
+						break;
+					}
 				}
 			}
 		}
+
+		void Indent() => _indent += _indentSize;
+		void Deindent() => _indent -= _indentSize;
+
+		#region IDeveloperConsole Implementation
+		public string MessageLog => _messageLog;
+
+		public void RegisterCommand(IConsoleCommand command)
+		{
+			if (_commands == null)
+				_commands = new Dictionary<string, IConsoleCommand>();
+
+			if (_commands.ContainsKey(command.Name))
+				ManageDuplicateCommandName(command);
+			else
+				_commands.Add(command.Name, command);
+
+			command.DeveloperConsole = this;
+		}
+
+		public void ProcessCommand(string input)
+		{
+			PushMessage($"> {input}");
+			Indent();
+
+			ICommandArguments commandArguments = GetArgumentsAndFlags(input);
+
+			if (commandArguments.CommandName == "help")
+				HandleHelpRequest(commandArguments);
+			else
+				HandleCommand(commandArguments);
+
+			if (_spacingStyle == SpacingStyle.Spacious)
+				PushMessage(string.Empty);
+			_indent = 0;
+		}
+
+		public void PushMessage(string message)
+		{
+			_messageLog += $"\n{new string(' ', _indent)}{message}";
+		}
+
+		public void PushMessages(string[] messages)
+		{
+			foreach (string message in messages)
+				PushMessage(message);
+		}
+
+		public void ClearLog()
+		{
+			_messageLog = string.Empty;
+		}
+		#endregion
 	}
-
-	void Indent() => _indent += _indentSize;
-	void Deindent() => _indent -= _indentSize;
-
-	#region IDeveloperConsole Implementation
-	public string MessageLog => _messageLog;
-
-	public void RegisterCommand(IConsoleCommand command)
-	{
-		if (_commands == null)
-			_commands = new Dictionary<string, IConsoleCommand>();
-
-		if (_commands.ContainsKey(command.Name))
-			ManageDuplicateCommandName(command);
-		else
-			_commands.Add(command.Name, command);
-
-		command.DeveloperConsole = this;
-	}
-
-	public void ProcessCommand(string input)
-	{
-		PushMessage($"> {input}");
-		Indent();
-
-		ICommandArguments commandArguments = GetArgumentsAndFlags(input);
-
-		if (commandArguments.CommandName == "help")
-			HandleHelpRequest(commandArguments);
-		else
-			HandleCommand(commandArguments);
-		
-		if (_spacingStyle == SpacingStyle.Spacious)
-			PushMessage(string.Empty);
-		_indent = 0;
-	}
-
-	public void PushMessage(string message)
-	{
-		_messageLog += $"\n{new string(' ', _indent)}{message}";
-	}
-
-	public void PushMessages(string[] messages)
-	{
-		foreach (string message in messages)
-			PushMessage(message);
-	}
-
-	public void ClearLog()
-	{
-		_messageLog = string.Empty;
-	}
-	#endregion
 }

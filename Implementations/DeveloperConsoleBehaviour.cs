@@ -3,52 +3,55 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class DeveloperConsoleBehaviour : SerializedMonoBehaviour, IDeveloperConsole
+namespace FedoraDev.DeveloperConsole.Implementations
 {
-	[SerializeField, HideLabel, BoxGroup("Console")] IDeveloperConsole _console;
-	[SerializeField] TMP_Text _logField;
-	[SerializeField] Scrollbar _scrollbar;
-
-	private void Start()
+	public class DeveloperConsoleBehaviour : SerializedMonoBehaviour, IDeveloperConsole
 	{
-		UpdateConsoleWindow();
-	}
+		[SerializeField, HideLabel, BoxGroup("Console")] IDeveloperConsole _console;
+		[SerializeField] TMP_Text _logField;
+		[SerializeField] Scrollbar _scrollbar;
 
-	void UpdateConsoleWindow()
-	{
-		_logField.text = _console.MessageLog;
-		_scrollbar.value = 0;
-	}
+		private void Start()
+		{
+			UpdateConsoleWindow();
+		}
 
-	public string MessageLog => _console.MessageLog;
+		void UpdateConsoleWindow()
+		{
+			_logField.text = _console.MessageLog;
+			_scrollbar.value = 0;
+		}
 
-	public void RegisterCommand(IConsoleCommand command)
-	{
-		_console.RegisterCommand(command);
-		command.DeveloperConsole = this;
-	}
+		public string MessageLog => _console.MessageLog;
 
-	public void ProcessCommand(string input)
-	{
-		_console.ProcessCommand(input);
-		UpdateConsoleWindow();
-	}
+		public void RegisterCommand(IConsoleCommand command)
+		{
+			_console.RegisterCommand(command);
+			command.DeveloperConsole = this;
+		}
 
-	public void PushMessage(string message)
-	{
-		_console.PushMessage(message);
-		UpdateConsoleWindow();
-	}
+		public void ProcessCommand(string input)
+		{
+			_console.ProcessCommand(input);
+			UpdateConsoleWindow();
+		}
 
-	public void PushMessages(string[] messages)
-	{
-		_console.PushMessages(messages);
-		UpdateConsoleWindow();
-	}
+		public void PushMessage(string message)
+		{
+			_console.PushMessage(message);
+			UpdateConsoleWindow();
+		}
 
-	public void ClearLog()
-	{
-		_console.ClearLog();
-		UpdateConsoleWindow();
+		public void PushMessages(string[] messages)
+		{
+			_console.PushMessages(messages);
+			UpdateConsoleWindow();
+		}
+
+		public void ClearLog()
+		{
+			_console.ClearLog();
+			UpdateConsoleWindow();
+		}
 	}
 }

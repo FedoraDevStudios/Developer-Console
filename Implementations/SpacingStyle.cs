@@ -1,5 +1,8 @@
-﻿public enum SpacingStyle
+﻿namespace FedoraDev.DeveloperConsole.Implementations
 {
-	Concise,
-	Spacious
+	public enum SpacingStyle
+	{
+		Concise,
+		Spacious
+	}
 }
