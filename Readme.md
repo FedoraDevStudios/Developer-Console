@@ -3,30 +3,7 @@
 A lightweight and extendible developer console system for Unity.
 
 ## Installation
-This project uses [Odin Inspector](https://assetstore.unity.com/packages/tools/utilities/odin-inspector-and-serializer-89041), which I cannot redistribute. If you don't own Odin Inspector, I would highly recommend purchasing it otherwise you won't be able to serialize interface instances as members which completely breaks this solution.
-
-#### Package Manager
-In Unity's Package Manager, you can add the repo as a git package. I have been able to get this to work by using the `https` method. In Github, select `Code > HTTPS` and click on the clip board. Back in Unity, open Package Manager and hit the plus button and select `Add package from git url`. Paste the link there and the package will be added automatically. If you do want a specific version, you can append `#version` to the end of the link. e.g. `#1.0.2`.
-
-#### UPM Upgrade
-If you are content keeping the latest version, you can add [UnityGitPackageUpdater](https://github.com/QuantumCalzone/UnityGitPackageUpdater)  via `https://github.com/QuantumCalzone/UnityGitPackageUpdater.git#upm` as well. This gives Unity an extra window under `Window > Package Updater` where you can easily update any git packages in your project.
-
-#### Manual Installation
-Unity's Package Manager seems to have issues with git repositories, however this can be added as a dependency to your Unity project manually.
-
-You just need to add a reference to this repo to your project's `Packages/manifest.json` file. Be sure to switch `[version]` with whichever release you would prefer, e.g. `.git#1.0.2`.
-
-```js
-{
-    "dependencies": {
-        ...,
-        "com.fedoradev.developerconsole": "https://github.com/FedoraDevStudios/Developer-Console.git#[version]"
-    }
-}
-```
-
-#### Manual Upgrade
-After installing manually, you have to change both `Packages/manifest.json` and `Packages/packages-lock.json`. In the former, simply update the dependency with the version you wish to pull. In the lock file, you need to remove the entry for the package. This entry is a few lines long and everything needs to be deleted, including the curly braces. After this is successfully completed, moving back to Unity will force the application to download the desired version.
+Follow the steps [Here](https://github.com/FedoraDevStudios/Installation-Unity) to add this package to your Unity project using this package's URL.
 
 ## Usage
 ### Add to Scene
